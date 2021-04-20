@@ -14,6 +14,7 @@ const initialState = {
         flagged: false,
         mine: false,
         revealed: false,
+        neighbours: 0,
       };
     })
   ),
@@ -68,11 +69,30 @@ class App extends Component {
   };
 
   handleClick = (cell) => {
+    if (cell.revealed) return;
+    const { x, y } = cell;
+    const grid = JSON.parse(JSON.stringify(this.state.grid));
+    const currentCell = grid[y][x];
+    currentCell.revealed = true;
+
     if (cell.mine === true) {
       console.log("Game Over");
     } else {
-      this.calculateMines(cell);
+      currentCell.neighbours = this.calculateMines(cell);
     }
+    grid[y][x] = currentCell;
+    this.setState({ grid });
+  };
+
+  handleContextMenu = (e, cell) => {
+    e.preventDefault();
+    const { x, y } = cell;
+    const grid = JSON.parse(JSON.stringify(this.state.grid));
+    const currentCell = grid[y][x];
+    currentCell.revealed = !currentCell.revealed;
+    currentCell.flagged = !currentCell.flagged;
+    grid[y][x] = currentCell;
+    this.setState({ grid });
   };
 
   handleReset = () => {
@@ -89,8 +109,15 @@ class App extends Component {
                 className="cell"
                 key={cell.id}
                 onClick={() => this.handleClick(cell)}
+                onContextMenu={(e) => this.handleContextMenu(e, cell)}
               >
-                {cell.mine ? "!" : "-"}
+                {cell.revealed
+                  ? cell.flagged
+                    ? "F"
+                    : cell.mine
+                    ? "*"
+                    : cell.neighbours
+                  : "-"}
               </div>
             ))}
           </div>

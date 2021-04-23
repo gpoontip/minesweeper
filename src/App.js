@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React, { useEffect, useReducer } from "react";
+import useTimer from "./hooks/useTimer";
 import "./App.scss";
 
 const height = 16;
@@ -8,8 +9,6 @@ const initialState = {
   gameOver: false,
   success: false,
   flags: mines,
-  timer: 0,
-  clicks: 0,
   grid: [...Array(height).keys()].map((y) =>
     [...Array(width).keys()].map((x) => {
       return {
@@ -25,17 +24,38 @@ const initialState = {
   ),
 };
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = initialState;
-  }
+const ACTIONS = {
+  GAME_OVER: "game-over",
+  UPDATE_SUCCESS: "update-success",
+  UPDATE_FLAGS: "update-flags",
+  UPDATE_GRID: "update-grid",
+  RESET: "reset",
+};
 
-  componentDidMount() {
-    this.placeMines();
+function reducer(state, action) {
+  switch (action.type) {
+    case ACTIONS.GAME_OVER:
+      return { ...state, gameOver: true };
+    case ACTIONS.UPDATE_SUCCESS:
+      return { ...state, success: action.payload.success };
+    case ACTIONS.UPDATE_FLAGS:
+      return { ...state, flags: action.payload.flags };
+    case ACTIONS.UPDATE_GRID:
+      return { ...state, grid: action.payload.grid };
+    case ACTIONS.RESET:
+      return { ...initialState };
+    default:
+      return state;
   }
+}
 
-  placeMines = () => {
+export default function App() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { timer, isActive, handleStart, handlePause, handleReset } = useTimer(
+    0
+  );
+
+  const placeMines = () => {
     let minesPlaced = 0;
     const grid = JSON.parse(JSON.stringify(initialState.grid));
     while (minesPlaced < mines) {
@@ -49,24 +69,17 @@ class App extends Component {
         minesPlaced++;
       }
     }
-    this.setState({ grid });
+    return grid;
   };
 
-  hasMine = ({ x, y }) => {
+  const hasMine = ({ x, y }) => {
     if (x >= height || y >= height || x < 0 || y < 0) return 0;
 
-    const cell = this.state.grid[y][x];
+    const cell = state.grid[y][x];
     return cell && cell.mine ? 1 : 0;
   };
 
-  calculateMines = (cell) => {
-    const neighbours = this.getNeighbours(cell);
-    return neighbours.reduce((count, row) => {
-      return count + this.hasMine(row);
-    }, 0);
-  };
-
-  getNeighbours = ({ x, y }) => {
+  const getNeighbours = ({ x, y }) => {
     return [
       { x: x - 1, y: y - 1 }, // top left
       { x: x, y: y - 1 }, // top
@@ -79,13 +92,19 @@ class App extends Component {
     ];
   };
 
-  revealNeighbours = (cell) => {
+  const calculateMines = (cell) => {
+    const neighbours = getNeighbours(cell);
+    return neighbours.reduce((count, row) => {
+      return count + hasMine(row);
+    }, 0);
+  };
+
+  const revealNeighbours = (cell, grid) => {
     const neighboursToReveal = [cell];
-    let grid = JSON.parse(JSON.stringify(this.state.grid));
 
     while (neighboursToReveal.length > 0) {
       let { x, y } = neighboursToReveal[0];
-      const neighbours = this.getNeighbours({ x, y });
+      const neighbours = getNeighbours({ x, y });
 
       neighbours.forEach((row) => {
         const { x, y } = row;
@@ -99,7 +118,7 @@ class App extends Component {
           return;
 
         grid[y][x].revealed = true;
-        grid[y][x].neighbours = this.calculateMines(row);
+        grid[y][x].neighbours = calculateMines(row);
 
         if (grid[y][x].neighbours === 0) {
           neighboursToReveal.push(row);
@@ -111,57 +130,48 @@ class App extends Component {
     return grid;
   };
 
-  handleClick = (cell) => {
-    if (
-      cell.revealed ||
-      cell.flagged ||
-      this.state.gameOver ||
-      this.state.success
-    )
+  const handleClick = (cell) => {
+    if (cell.revealed || cell.flagged || state.gameOver || state.success)
       return;
     const { x, y } = cell;
-    let grid = JSON.parse(JSON.stringify(this.state.grid));
+    let grid = JSON.parse(JSON.stringify(state.grid));
     const currentCell = grid[y][x];
-    let clicks = this.state.clicks;
 
     currentCell.revealed = true;
 
-    if (clicks === 0) {
-      this.startTimer();
+    if (!isActive) {
+      handleStart();
     }
 
     if (cell.mine === true) {
-      this.stopTimer();
-      this.setState({ gameOver: true });
+      handlePause();
+      dispatch({ type: ACTIONS.GAME_OVER });
     } else {
-      clicks++;
-      currentCell.neighbours = this.calculateMines(cell);
+      currentCell.neighbours = calculateMines(cell);
       if (currentCell.neighbours === 0) {
-        grid = this.revealNeighbours(cell);
+        grid = revealNeighbours(cell, grid);
       }
     }
 
     let success = false;
-    if (this.state.flags === 0) {
-      success = this.checkSuccess(grid);
+    if (state.flags === 0) {
+      success = checkSuccess(grid);
     }
 
     grid[y][x] = currentCell;
-    this.setState({ grid, clicks, success });
+
+    dispatch({ type: ACTIONS.UPDATE_GRID, payload: { grid } });
+    dispatch({ type: ACTIONS.SUCCESS, payload: { success } });
   };
 
-  handleContextMenu = (e, cell) => {
+  const handleContextMenu = (e, cell) => {
     e.preventDefault();
-    if (
-      this.state.gameOver ||
-      this.state.success ||
-      (cell.revealed && !cell.flagged)
-    )
+    if (state.gameOver || state.success || (cell.revealed && !cell.flagged))
       return;
     const { x, y } = cell;
-    const grid = JSON.parse(JSON.stringify(this.state.grid));
+    const grid = JSON.parse(JSON.stringify(state.grid));
     const currentCell = grid[y][x];
-    let flags = this.state.flags;
+    let flags = state.flags;
 
     if (currentCell.flagged) {
       currentCell.flagged = false;
@@ -174,33 +184,23 @@ class App extends Component {
 
     let success = false;
     if (flags === 0) {
-      success = this.checkSuccess(grid);
+      success = checkSuccess(grid);
     }
 
-    this.setState({ grid, flags, success });
+    dispatch({ type: ACTIONS.UPDATE_GRID, payload: { grid } });
+    dispatch({ type: ACTIONS.UPDATE_FLAGS, payload: { flags } });
+    dispatch({ type: ACTIONS.UPDATE_SUCCESS, payload: { success } });
   };
 
-  handleReset = () => {
-    this.stopTimer();
-    this.setState(initialState);
-    this.placeMines();
+  const handleRestart = () => {
+    handleReset();
+    const grid = placeMines();
+
+    dispatch({ type: ACTIONS.RESET });
+    dispatch({ type: ACTIONS.UPDATE_GRID, payload: { grid } });
   };
 
-  setTime = () => {
-    let timer = this.state.timer;
-    timer++;
-    this.setState({ timer });
-  };
-
-  startTimer = () => {
-    this.timer = setInterval(this.setTime, 1000);
-  };
-
-  stopTimer = () => {
-    clearInterval(this.timer);
-  };
-
-  checkSuccess = (grid) => {
+  const checkSuccess = (grid) => {
     let revealed = 0;
     let correct = 0;
     grid.forEach((row) => {
@@ -210,67 +210,65 @@ class App extends Component {
       });
     });
     if (revealed === height * width - mines && correct === mines) {
-      this.stopTimer();
+      handlePause();
       return true;
     }
   };
 
-  render() {
-    return (
-      <div
-        className={`app ${
-          this.state.gameOver
-            ? "game-over"
-            : this.state.success
-            ? "success"
-            : ""
-        }`}
-      >
-        <div className="header">
-          <div className="mines">
-            <div className="clock">{this.state.flags}</div>
-          </div>
-          <div className="smiley">
-            <button
-              onClick={() => this.handleReset()}
-              className="reset"
-            ></button>
-          </div>
-          <div className="timer">
-            <div className="clock">{this.state.timer}</div>
-          </div>
+  useEffect(() => {
+    const grid = placeMines();
+    dispatch({ type: ACTIONS.UPDATE_GRID, payload: { grid } });
+
+    return handleReset();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div
+      className={`app ${
+        state.gameOver ? "game-over" : state.success ? "success" : ""
+      }`}
+    >
+      <div className="header">
+        <div className="mines">
+          <div className="clock">{state.flags}</div>
         </div>
-        <div className="board">
-          {this.state.grid.map((row, i) => (
-            <div className="row" key={`row-${i}`}>
-              {row.map((cell) => (
-                <div
-                  className={`cell ${cell.mine ? "mine" : ""} ${
-                    cell.flagged ? "flagged" : cell.revealed ? "revealed" : ""
-                  } ${
-                    cell.neighbours === 1
-                      ? "blue"
-                      : cell.neighbours === 2
-                      ? "green"
-                      : cell.neighbours === 3
-                      ? "red"
-                      : "black"
-                  }`}
-                  key={cell.id}
-                  onClick={() => this.handleClick(cell)}
-                  onContextMenu={(e) => this.handleContextMenu(e, cell)}
-                >
-                  {cell.revealed && !cell.flagged && cell.neighbours
-                    ? cell.neighbours
-                    : ""}
-                </div>
-              ))}
-            </div>
-          ))}
+        <div className="smiley">
+          <button onClick={() => handleRestart()} className="restart"></button>
+        </div>
+        <div className="timer">
+          <div className="clock">{timer}</div>
         </div>
       </div>
-    );
-  }
+      <div className="board">
+        {state.grid.map((row, i) => (
+          <div className="row" key={`row-${i}`}>
+            {row.map((cell) => (
+              <div
+                className={`cell ${cell.mine ? "mine" : ""} ${
+                  cell.flagged ? "flagged" : cell.revealed ? "revealed" : ""
+                } ${
+                  cell.neighbours === 1
+                    ? "blue"
+                    : cell.neighbours === 2
+                    ? "green"
+                    : cell.neighbours === 3
+                    ? "red"
+                    : "black"
+                }`}
+                key={cell.id}
+                onClick={() => handleClick(cell)}
+                onContextMenu={(e) => handleContextMenu(e, cell)}
+              >
+                {cell.revealed && !cell.flagged && cell.neighbours
+                  ? cell.neighbours
+                  : ""}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
-
-export default App;

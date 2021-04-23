@@ -76,7 +76,7 @@
 .timer {
   text-align: right;
 }
-.reset {
+.restart {
   background: none;
   border: none;
   border: 2px solid #8e8e8e;
@@ -84,26 +84,26 @@
   border-left-color: #f3f3f3;
   padding: 5px;
 }
-.reset:after {
+.restart:after {
   content: "\f581";
   font-family: "Font Awesome\ 5 Free";
   font-weight: bold;
   font-size: 30px;
   color: #ffed00;
 }
-.reset:active {
+.restart:active {
   border-color: #f3f3f3;
   border-top-color: #8e8e8e;
   border-left-color: #8e8e8e;
 }
-.reset:focus {
+.restart:focus {
   outline: 0;
 }
-.game-over .reset:after {
+.game-over .restart:after {
   content: "\f567";
   color: black;
 }
-.success .reset:after {
+.success .restart:after {
   content: "\f587";
   color: green;
 }

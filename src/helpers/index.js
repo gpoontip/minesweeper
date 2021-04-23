@@ -1,6 +1,6 @@
 import { initialState } from "../context/reducer";
 
-export const hasMine = ({ x, y }, grid) => {
+const hasMine = ({ x, y }, grid) => {
   const { height } = initialState.gameOptions;
   if (x >= height || y >= height || x < 0 || y < 0) return 0;
 
@@ -8,7 +8,7 @@ export const hasMine = ({ x, y }, grid) => {
   return cell && cell.mine ? 1 : 0;
 };
 
-export const getNeighbours = ({ x, y }) => {
+const getNeighbours = ({ x, y }) => {
   return [
     { x: x - 1, y: y - 1 }, // top left
     { x: x, y: y - 1 }, // top

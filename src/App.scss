@@ -1,118 +1,22 @@
-.cell {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-  text-align: center;
-  cursor: default;
-  border: 3px solid #f3f3f3;
-  border-right-color: #8e8e8e;
-  border-bottom-color: #8e8e8e;
-  background: #ccc;
-}
-.revealed {
-  border-color: #aaa;
-  border-width: 1px;
-  padding: 2px;
-  font-weight: bold;
-}
-.revealed.mine {
-  background: red;
-}
-.revealed.mine:after {
-  background: red;
-  content: "\f1e2";
-  font-family: "Font Awesome\ 5 Free";
-  font-weight: bold;
-}
-.flagged:after {
-  content: "\f024";
-  font-family: "Font Awesome\ 5 Free";
-  font-weight: bold;
-  color: red;
-}
-.game-over .mine:after {
-  content: "\f1e2";
-  font-family: "Font Awesome\ 5 Free";
-  font-weight: bold;
-}
-.blue {
-  color: blue;
-}
-.green {
-  color: green;
-}
-.red {
-  color: red;
-}
-.board {
-  border: 4px solid #f3f3f3;
-  border-top-color: #8e8e8e;
-  border-left-color: #8e8e8e;
-}
+@import "./helpers/variables";
+
 .app {
   display: inline-block;
-  background: #ccc;
+  background: $board;
   padding: 10px;
 }
-.row {
-  display: flex;
-}
-.header {
-  border: 2px solid #f3f3f3;
-  border-top-color: #8e8e8e;
-  border-left-color: #8e8e8e;
-  margin-bottom: 10px;
-  padding: 5px;
-  display: flex;
-  align-items: stretch;
-}
-.header > div {
-  flex-grow: 1;
-}
-.smiley {
-  text-align: center;
-}
-.timer {
-  text-align: right;
-}
-.restart {
-  background: none;
-  border: none;
-  border: 2px solid #8e8e8e;
-  border-top-color: #f3f3f3;
-  border-left-color: #f3f3f3;
-  padding: 5px;
-}
-.restart:after {
-  content: "\f581";
-  font-family: "Font Awesome\ 5 Free";
-  font-weight: bold;
-  font-size: 30px;
-  color: #ffed00;
-}
-.restart:active {
-  border-color: #f3f3f3;
-  border-top-color: #8e8e8e;
-  border-left-color: #8e8e8e;
-}
-.restart:focus {
-  outline: 0;
-}
-.game-over .restart:after {
-  content: "\f567";
-  color: black;
+.game-over {
+  .mine:after {
+    content: "\f1e2";
+    font-family: "Font Awesome\ 5 Free";
+    font-weight: bold;
+  }
+  .restart:after {
+    content: "\f567";
+    color: black;
+  }
 }
 .success .restart:after {
   content: "\f587";
   color: green;
-}
-.clock {
-  background: black;
-  color: red;
-  height: 100%;
-  display: inline-flex;
-  align-items: center;
-  font-size: 30px;
-  padding: 0 5px;
 }

@@ -4,10 +4,16 @@ import { ACTIONS } from "../context/reducer";
 import useTimer from "../hooks/useTimer";
 import { setup } from "../helpers/setup";
 import { initialState } from "../context/reducer";
+import styles from "./Header.module.scss";
 
 export default function Header() {
   const [{ flags, gameOptions, isActive }, dispatch] = useStateValue();
   const { timer, handleReset, handleStart, handlePause } = useTimer(0);
+
+  useEffect(() => {
+    return handleReset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (isActive) handleStart();
@@ -24,15 +30,18 @@ export default function Header() {
   };
 
   return (
-    <div className="header">
+    <div className={styles.header}>
       <div className="mines">
-        <div className="clock">{gameOptions.mines - flags}</div>
+        <div className={styles.clock}>{gameOptions.mines - flags}</div>
       </div>
-      <div className="smiley">
-        <button onClick={() => handleRestart()} className="restart"></button>
+      <div className={styles.smiley}>
+        <button
+          onClick={() => handleRestart()}
+          className={`${styles.restart} restart`}
+        ></button>
       </div>
-      <div className="timer">
-        <div className="clock">{timer}</div>
+      <div className={styles.timer}>
+        <div className={styles.clock}>{timer}</div>
       </div>
     </div>
   );

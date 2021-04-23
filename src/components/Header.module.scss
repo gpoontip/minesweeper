@@ -1,0 +1,56 @@
+@import "../helpers/variables";
+
+.header {
+  border: 2px solid $light;
+  border-top-color: $dark;
+  border-left-color: $dark;
+  margin-bottom: 10px;
+  padding: 5px;
+  display: flex;
+  align-items: stretch;
+  & > div {
+    flex-grow: 1;
+  }
+}
+
+.clock {
+  background: black;
+  color: red;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  font-size: 30px;
+  padding: 0 5px;
+}
+
+.restart {
+  background: none;
+  border: none;
+  border: 2px solid $dark;
+  border-top-color: $light;
+  border-left-color: $light;
+  padding: 5px;
+  &:after {
+    content: "\f581";
+    font-family: "Font Awesome\ 5 Free";
+    font-weight: bold;
+    font-size: 30px;
+    color: #ffed00;
+  }
+  &:active {
+    border-color: $light;
+    border-top-color: $dark;
+    border-left-color: $dark;
+  }
+  &:focus {
+    outline: 0;
+  }
+}
+
+.smiley {
+  text-align: center;
+}
+
+.timer {
+  text-align: right;
+}

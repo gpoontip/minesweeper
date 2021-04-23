@@ -2,6 +2,7 @@ import React from "react";
 import { useStateValue } from "../context/StateProvider";
 import { ACTIONS } from "../context/reducer";
 import { calculateMines, revealNeighbours, checkSuccess } from "../helpers";
+import styles from "./Board.module.scss";
 
 export default function Board() {
   const [state, dispatch] = useStateValue();
@@ -32,8 +33,10 @@ export default function Board() {
       }
     }
 
+    grid[y][x] = currentCell;
+
     let success = false;
-    if (state.flags === 0) {
+    if (state.flags === state.gameOptions.mines) {
       success = checkSuccess(grid);
       if (success)
         dispatch({
@@ -42,10 +45,8 @@ export default function Board() {
         });
     }
 
-    grid[y][x] = currentCell;
-
     dispatch({ type: ACTIONS.UPDATE_GRID, payload: { grid } });
-    dispatch({ type: ACTIONS.SUCCESS, payload: { success } });
+    dispatch({ type: ACTIONS.UPDATE_SUCCESS, payload: { success } });
   };
 
   const handleContextMenu = (e, cell) => {
@@ -67,7 +68,7 @@ export default function Board() {
     grid[y][x] = currentCell;
 
     let success = false;
-    if (flags === 0) {
+    if (flags === state.gameOptions.mines) {
       success = checkSuccess(grid);
       if (success)
         dispatch({
@@ -82,21 +83,27 @@ export default function Board() {
   };
 
   return (
-    <div className="board">
+    <div className={styles.board}>
       {state.grid.map((row, i) => (
-        <div className="row" key={`row-${i}`}>
+        <div className={styles.row} key={`row-${i}`}>
           {row.map((cell) => (
             <div
-              className={`cell ${cell.mine ? "mine" : ""} ${
-                cell.flagged ? "flagged" : cell.revealed ? "revealed" : ""
+              className={`${styles.cell} ${
+                cell.mine ? styles.mine + " mine" : ""
+              } ${
+                cell.flagged
+                  ? styles.flagged
+                  : cell.revealed
+                  ? styles.revealed
+                  : ""
               } ${
                 cell.neighbours === 1
-                  ? "blue"
+                  ? styles.blue
                   : cell.neighbours === 2
-                  ? "green"
+                  ? styles.green
                   : cell.neighbours === 3
-                  ? "red"
-                  : "black"
+                  ? styles.red
+                  : styles.black
               }`}
               key={cell.id}
               onClick={() => handleClick(cell)}

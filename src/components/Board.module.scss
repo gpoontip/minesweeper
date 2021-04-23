@@ -1,0 +1,60 @@
+@import "../helpers/variables";
+
+.blue {
+  color: blue;
+}
+.green {
+  color: green;
+}
+.red {
+  color: red;
+}
+.black {
+  color: black;
+}
+
+.board {
+  border: 4px solid $light;
+  border-top-color: $dark;
+  border-left-color: $dark;
+}
+
+.row {
+  display: flex;
+}
+
+.cell {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  cursor: default;
+  border: 3px solid $light;
+  border-right-color: $dark;
+  border-bottom-color: $dark;
+  background: $board;
+}
+
+.revealed {
+  border-color: #aaa;
+  border-width: 1px;
+  padding: 2px;
+  font-weight: bold;
+  &.mine {
+    background: red;
+  }
+  &.mine:after {
+    background: red;
+    content: "\f1e2";
+    font-family: "Font Awesome\ 5 Free";
+    font-weight: bold;
+  }
+}
+
+.flagged:after {
+  content: "\f024";
+  font-family: "Font Awesome\ 5 Free";
+  font-weight: bold;
+  color: red;
+}

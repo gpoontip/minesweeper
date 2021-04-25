@@ -3,6 +3,7 @@ import { useStateValue } from "../context/StateProvider";
 import { ACTIONS } from "../context/reducer";
 import { calculateMines, revealNeighbours, checkSuccess } from "../helpers";
 import styles from "./Board.module.scss";
+import NameEntry from "./NameEntry";
 
 export default function Board() {
   const [state, dispatch] = useStateValue();
@@ -116,6 +117,7 @@ export default function Board() {
           ))}
         </div>
       ))}
+      <NameEntry show={state.success} />
     </div>
   );
 }

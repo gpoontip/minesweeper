@@ -8,7 +8,7 @@ import styles from "./Header.module.scss";
 
 export default function Header() {
   const [{ flags, gameOptions, isActive }, dispatch] = useStateValue();
-  const { timer, handleReset, handleStart, handlePause } = useTimer(0);
+  const { timer, handleReset, handleStart, handlePause } = useTimer();
 
   useEffect(() => {
     return handleReset();
@@ -16,8 +16,12 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    if (isActive) handleStart();
-    else handlePause();
+    if (isActive) {
+      handleStart();
+    } else {
+      handlePause();
+      dispatch({ type: ACTIONS.UPDATE_SECONDS, payload: { seconds: timer } });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isActive]);
 

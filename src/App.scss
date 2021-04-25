@@ -4,7 +4,9 @@
   display: inline-block;
   background: $board;
   padding: 10px;
+  position: relative;
 }
+
 .game-over {
   .mine:after {
     content: "\f1e2";
@@ -16,6 +18,7 @@
     color: black;
   }
 }
+
 .success .restart:after {
   content: "\f587";
   color: green;

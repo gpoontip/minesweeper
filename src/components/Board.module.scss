@@ -17,6 +17,7 @@
   border: 4px solid $light;
   border-top-color: $dark;
   border-left-color: $dark;
+  position: relative;
 }
 
 .row {
@@ -29,7 +30,6 @@
   height: 20px;
   line-height: 20px;
   text-align: center;
-  cursor: default;
   border: 3px solid $light;
   border-right-color: $dark;
   border-bottom-color: $dark;

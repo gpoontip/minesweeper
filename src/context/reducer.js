@@ -9,6 +9,9 @@ export const initialState = {
   isActive: false,
   flags: 0,
   grid: [],
+  scores: [],
+  name: null,
+  seconds: 0,
 };
 
 export const ACTIONS = {
@@ -18,6 +21,9 @@ export const ACTIONS = {
   UPDATE_GRID: "update-grid",
   UPDATE_IS_ACTIVE: "update-is-active",
   RESET: "reset",
+  UPDATE_NAME: "update-name",
+  UPDATE_SECONDS: "update-seconds",
+  FETCH_SCORES: "fetch-scores",
 };
 
 export default function reducer(state, action) {
@@ -33,7 +39,13 @@ export default function reducer(state, action) {
     case ACTIONS.UPDATE_IS_ACTIVE:
       return { ...state, isActive: action.payload.isActive };
     case ACTIONS.RESET:
-      return { ...initialState };
+      return { ...initialState, scores: state.scores };
+    case ACTIONS.UPDATE_NAME:
+      return { ...state, name: action.payload.name };
+    case ACTIONS.UPDATE_SECONDS:
+      return { ...state, seconds: action.payload.seconds };
+    case ACTIONS.FETCH_SCORES:
+      return { ...state, scores: action.payload.scores };
     default:
       return state;
   }

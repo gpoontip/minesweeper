@@ -2,6 +2,7 @@
 
 - Popular minesweeper game written in React.
 - Application state is handled using the Context API and `useReducer` hook.
+- Styling handled using css modules and scss
 - High scores are saved and reported using node/express REST API
 - Automated tests written using Jest and React Testing Library
 

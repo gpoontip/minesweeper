@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styles from "./NameEntry.module.scss";
-import { addScore, getAllScores } from "../api/scores";
+import { addScore } from "../api/scores";
 import { useStateValue } from "../context/StateProvider";
 import { ACTIONS } from "../context/reducer";
 
 export default function NameEntry({ show }) {
-  const [{ seconds }, dispatch] = useStateValue();
+  const [{ seconds, scores }, dispatch] = useStateValue();
   const [submitting, setSubmitting] = useState(false);
   const [initials, setInitials] = useState(false);
   const [displayForm, setDisplayForm] = useState(false);
@@ -23,10 +23,9 @@ export default function NameEntry({ show }) {
       const score = seconds;
       const response = await addScore({ name, score });
       if (response.data && response.data.status === "success") {
-        const scores = await getAllScores();
         dispatch({
           type: ACTIONS.FETCH_SCORES,
-          payload: { scores: scores.data },
+          payload: { scores: [...scores, response.data.data] },
         });
         setDisplayForm(false);
       }

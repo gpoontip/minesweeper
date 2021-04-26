@@ -1,8 +1,8 @@
 import { initialState } from "../context/reducer";
 
 const hasMine = ({ x, y }, grid) => {
-  const { height } = initialState.gameOptions;
-  if (x >= height || y >= height || x < 0 || y < 0) return 0;
+  const { height, width } = initialState.gameOptions;
+  if (x >= width || y >= height || x < 0 || y < 0) return 0;
 
   const cell = grid[y][x];
   return cell && cell.mine ? 1 : 0;
@@ -29,7 +29,7 @@ export const calculateMines = (cell, grid) => {
 };
 
 export const revealNeighbours = (cell, grid) => {
-  const { height } = initialState.gameOptions;
+  const { height, width } = initialState.gameOptions;
   const neighboursToReveal = [cell];
 
   while (neighboursToReveal.length > 0) {
@@ -39,7 +39,7 @@ export const revealNeighbours = (cell, grid) => {
     neighbours.forEach((row) => {
       const { x, y } = row;
       if (
-        x >= height ||
+        x >= width ||
         y >= height ||
         x < 0 ||
         y < 0 ||

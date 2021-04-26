@@ -84,6 +84,7 @@ export default function Board() {
         <div className={styles.row} key={`row-${i}`}>
           {row.map((cell) => (
             <div
+              data-testid={cell.mine ? "mine" : "cell"}
               className={`${styles.cell} ${
                 cell.mine ? styles.mine + " mine" : ""
               } ${

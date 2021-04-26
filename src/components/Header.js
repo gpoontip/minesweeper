@@ -40,6 +40,7 @@ export default function Header() {
       </div>
       <div className={styles.smiley}>
         <button
+          aria-label="Restart"
           onClick={() => handleRestart()}
           className={`${styles.restart} restart`}
         ></button>

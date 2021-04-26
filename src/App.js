@@ -9,7 +9,10 @@ export default function App() {
   const [{ gameOver, success }] = useStateValue();
 
   return (
-    <div className={`app ${gameOver ? "game-over" : success ? "success" : ""}`}>
+    <div
+      data-testid="app"
+      className={`app ${gameOver ? "game-over" : success ? "success" : ""}`}
+    >
       <Header />
       <Board />
       <Scores />

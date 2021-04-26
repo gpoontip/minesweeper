@@ -8,12 +8,20 @@ export default function HighScores() {
   const [{ scores }, dispatch] = useStateValue();
 
   useEffect(() => {
-    getAllScores().then((scores) => {
-      dispatch({
-        type: ACTIONS.FETCH_SCORES,
-        payload: { scores: scores.data },
-      });
-    });
+    const fetchScores = async () => {
+      try {
+        const response = await getAllScores();
+        if (response && response.status === 200) {
+          dispatch({
+            type: ACTIONS.FETCH_SCORES,
+            payload: { scores: response.data },
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchScores();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

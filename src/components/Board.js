@@ -4,6 +4,7 @@ import { ACTIONS } from "../context/reducer";
 import { calculateMines, revealNeighbours, checkSuccess } from "../helpers";
 import styles from "./Board.module.scss";
 import NameEntry from "./NameEntry";
+import Cell from "./Cell";
 
 export default function Board() {
   const [state, dispatch] = useStateValue();
@@ -104,33 +105,12 @@ export default function Board() {
       {state.grid.map((row, i) => (
         <div className={styles.row} key={`row-${i}`}>
           {row.map((cell) => (
-            <div
-              data-testid={cell.mine ? "mine" : "cell"}
-              className={`${styles.cell} ${
-                cell.mine ? styles.mine + " mine" : ""
-              } ${
-                cell.flagged
-                  ? styles.flagged
-                  : cell.revealed
-                  ? styles.revealed
-                  : ""
-              } ${
-                cell.neighbours === 1
-                  ? styles.blue
-                  : cell.neighbours === 2
-                  ? styles.green
-                  : cell.neighbours === 3
-                  ? styles.red
-                  : styles.black
-              }`}
+            <Cell
               key={cell.id}
-              onClick={() => handleClick(cell)}
-              onContextMenu={(e) => handleContextMenu(e, cell)}
-            >
-              {cell.revealed && !cell.flagged && cell.neighbours
-                ? cell.neighbours
-                : ""}
-            </div>
+              onClick={(cell) => handleClick(cell)}
+              onContextMenu={(e, cell) => handleContextMenu(e, cell)}
+              cell={cell}
+            />
           ))}
         </div>
       ))}

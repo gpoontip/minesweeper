@@ -13,9 +13,8 @@ export default function Board() {
       return;
     const { x, y } = cell;
     let grid = JSON.parse(JSON.stringify(state.grid));
-    const currentCell = grid[y][x];
 
-    currentCell.revealed = true;
+    grid[y][x].revealed = true;
 
     if (!state.isActive) {
       dispatch({ type: ACTIONS.UPDATE_IS_ACTIVE, payload: { isActive: true } });
@@ -28,13 +27,11 @@ export default function Board() {
       });
       dispatch({ type: ACTIONS.GAME_OVER });
     } else {
-      currentCell.neighbours = calculateMines(cell, grid);
-      if (currentCell.neighbours === 0) {
+      grid[y][x].neighbours = calculateMines(cell, grid);
+      if (grid[y][x].neighbours === 0) {
         grid = revealNeighbours(cell, grid);
       }
     }
-
-    grid[y][x] = currentCell;
 
     let success = false;
     if (state.flags === state.gameOptions.mines) {
@@ -56,17 +53,15 @@ export default function Board() {
       return;
     const { x, y } = cell;
     const grid = JSON.parse(JSON.stringify(state.grid));
-    const currentCell = grid[y][x];
     let flags = state.flags;
 
-    if (currentCell.flagged) {
-      currentCell.flagged = false;
+    if (grid[y][x].flagged) {
+      grid[y][x].flagged = false;
       flags--;
     } else if (flags < state.gameOptions.mines) {
-      currentCell.flagged = true;
+      grid[y][x].flagged = true;
       flags++;
     }
-    grid[y][x] = currentCell;
 
     let success = false;
     if (flags === state.gameOptions.mines) {

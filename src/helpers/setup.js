@@ -20,10 +20,8 @@ export const setup = (initialState) => {
     const randomRow = Math.floor(Math.random() * height);
     const randomCol = Math.floor(Math.random() * width);
 
-    const currentCell = grid[randomRow][randomCol];
-    if (currentCell.mine === false) {
-      currentCell.mine = true;
-      grid[randomRow][randomCol] = currentCell;
+    if (grid[randomRow][randomCol].mine === false) {
+      grid[randomRow][randomCol].mine = true;
       minesPlaced++;
     }
   }

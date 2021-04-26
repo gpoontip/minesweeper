@@ -5,7 +5,7 @@ const addScore = (data) => {
   return axios.post(`${url}/scores`, data);
 };
 
-const getAllScores = (data) => {
+const getAllScores = () => {
   return axios.get(`${url}/scores`);
 };
 

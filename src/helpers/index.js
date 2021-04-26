@@ -9,7 +9,7 @@ const hasMine = ({ x, y }, grid, gameOptions) => {
   return cell && cell.mine ? 1 : 0;
 };
 
-// return neibouring cell coordinates
+// return neighbouring cell coordinates
 const getNeighbours = ({ x, y }) => {
   return [
     { x: x - 1, y: y - 1 }, // top left

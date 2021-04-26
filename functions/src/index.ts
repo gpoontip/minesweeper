@@ -5,7 +5,11 @@ import { addScore, getAllScores } from "./scoreController";
 const app = express();
 
 const cors = require("cors");
-const whitelist = ["http://localhost:3000", "http://localhost:3001"];
+const whitelist = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "https://minesweeper-290f4.web.app",
+];
 const corsOptions = {
   origin: (origin: any, callback: any) => {
     if (whitelist.indexOf(origin) !== -1) {

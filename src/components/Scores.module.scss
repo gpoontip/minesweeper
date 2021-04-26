@@ -7,11 +7,11 @@
   bottom: 0;
   background: #ccc;
   padding: 10px;
-  width: 150px;
+  width: 140px;
 }
 
 .scores {
-  overflow-y: scroll;
+  overflow-y: auto;
   height: 100%;
   h1 {
     margin: 0 0 0.5rem 0;

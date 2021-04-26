@@ -9,6 +9,7 @@ export default function HighScores() {
   const [sortedScores, setSortedScores] = useState(scores);
 
   useEffect(() => {
+    // fetch high scores
     const fetchScores = async () => {
       try {
         const response = await getAllScores();
@@ -27,6 +28,7 @@ export default function HighScores() {
   }, []);
 
   useEffect(() => {
+    // sort high scores when a new score is added
     const sorted = scores.sort((a, b) =>
       a.score > b.score ? 1 : b.score > a.score ? -1 : 0
     );

@@ -1,4 +1,6 @@
 export const setup = (initialState) => {
+  // setup grid
+
   const { height, width, mines } = initialState.gameOptions;
 
   const grid = [...Array(height).keys()].map((y) =>
@@ -14,6 +16,9 @@ export const setup = (initialState) => {
       };
     })
   );
+
+  // place mines
+
   let minesPlaced = 0;
 
   while (minesPlaced < mines) {

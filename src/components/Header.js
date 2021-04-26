@@ -11,24 +11,33 @@ export default function Header() {
   const { timer, handleReset, handleStart, handlePause } = useTimer();
 
   useEffect(() => {
+    // stop timer on unmount
     return handleReset();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (isActive) {
+      // start timer
       handleStart();
     } else {
+      // pause timer
       handlePause();
+
+      // save time
       dispatch({ type: ACTIONS.UPDATE_SECONDS, payload: { seconds: timer } });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isActive]);
 
   const handleRestart = () => {
+    // restart timer
     handleReset();
+
+    // reset grid
     const { grid } = setup(initialState);
 
+    // reset game
     dispatch({ type: ACTIONS.RESET });
     dispatch({ type: ACTIONS.UPDATE_GRID, payload: { grid } });
   };

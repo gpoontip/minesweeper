@@ -11,11 +11,13 @@ export default function NameEntry({ show }) {
   const [displayForm, setDisplayForm] = useState(false);
 
   useEffect(() => {
+    // display form based on show prop
     setInitials("");
     setDisplayForm(show);
   }, [show]);
 
   const handleSubmit = async (e) => {
+    // save high score
     e.preventDefault();
     setSubmitting(true);
     try {

@@ -27,15 +27,15 @@ export default function Board() {
       });
       dispatch({ type: ACTIONS.GAME_OVER });
     } else {
-      grid[y][x].neighbours = calculateMines(cell, grid);
+      grid[y][x].neighbours = calculateMines(cell, grid, state.gameOptions);
       if (grid[y][x].neighbours === 0) {
-        grid = revealNeighbours(cell, grid);
+        grid = revealNeighbours(cell, grid, state.gameOptions);
       }
     }
 
     let success = false;
     if (state.flags === state.gameOptions.mines) {
-      success = checkSuccess(grid);
+      success = checkSuccess(grid, state.gameOptions);
       if (success)
         dispatch({
           type: ACTIONS.UPDATE_IS_ACTIVE,
@@ -65,7 +65,7 @@ export default function Board() {
 
     let success = false;
     if (flags === state.gameOptions.mines) {
-      success = checkSuccess(grid);
+      success = checkSuccess(grid, state.gameOptions);
       if (success)
         dispatch({
           type: ACTIONS.UPDATE_IS_ACTIVE,

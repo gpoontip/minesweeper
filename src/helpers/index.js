@@ -1,7 +1,5 @@
-import { initialState } from "../context/reducer";
-
-const hasMine = ({ x, y }, grid) => {
-  const { height, width } = initialState.gameOptions;
+const hasMine = ({ x, y }, grid, gameOptions) => {
+  const { height, width } = gameOptions;
   if (x >= width || y >= height || x < 0 || y < 0) return 0;
 
   const cell = grid[y][x];
@@ -21,15 +19,15 @@ const getNeighbours = ({ x, y }) => {
   ];
 };
 
-export const calculateMines = (cell, grid) => {
+export const calculateMines = (cell, grid, gameOptions) => {
   const neighbours = getNeighbours(cell);
   return neighbours.reduce((count, row) => {
-    return count + hasMine(row, grid);
+    return count + hasMine(row, grid, gameOptions);
   }, 0);
 };
 
-export const revealNeighbours = (cell, grid) => {
-  const { height, width } = initialState.gameOptions;
+export const revealNeighbours = (cell, grid, gameOptions) => {
+  const { height, width } = gameOptions;
   const neighboursToReveal = [cell];
 
   while (neighboursToReveal.length > 0) {
@@ -48,7 +46,7 @@ export const revealNeighbours = (cell, grid) => {
         return;
 
       grid[y][x].revealed = true;
-      grid[y][x].neighbours = calculateMines(row, grid);
+      grid[y][x].neighbours = calculateMines(row, grid, gameOptions);
 
       if (grid[y][x].neighbours === 0) {
         neighboursToReveal.push(row);
@@ -60,8 +58,8 @@ export const revealNeighbours = (cell, grid) => {
   return grid;
 };
 
-export const checkSuccess = (grid) => {
-  const { height, width, mines } = initialState.gameOptions;
+export const checkSuccess = (grid, gameOptions) => {
+  const { height, width, mines } = gameOptions;
   let revealed = 0;
   let correct = 0;
   grid.forEach((row) => {
